@@ -242,23 +242,15 @@ if(UNIX AND NOT APPLE)
 endif()
 
 
-if(WIN32)
-	set (dest "Program Files")
-else()
-	set (dest "Applications")
-endif()
-
-install (TARGETS ${PLUGIN_NAME} DESTINATION "${dest}")
-
 include(GNUInstallDirs)
 
 if(TARGET ${PROJECT_NAME}_Standalone)
-  install(TARGETS ${PROJECT_NAME}_Standalone DESTINATION ${CMAKE_INSTALL_BINDIR})
+	install(TARGETS ${PROJECT_NAME}_Standalone DESTINATION ${CMAKE_INSTALL_BINDIR})
 endif()
 
 foreach(format VST VST3 LV2)
-  if(TARGET ${PROJECT_NAME}_${format})
-    get_target_property(output ${PROJECT_NAME}_${format} JUCE_PLUGIN_ARTEFACT_FILE)
-    install(DIRECTORY ${output} DESTINATION ${CMAKE_INSTALL_LIBDIR}/$<LOWER_CASE:${format}>)
-  endif()
+	if(TARGET ${PROJECT_NAME}_${format})
+		get_target_property(output ${PROJECT_NAME}_${format} JUCE_PLUGIN_ARTEFACT_FILE)
+		install(DIRECTORY ${output} DESTINATION ${CMAKE_INSTALL_LIBDIR}/$<LOWER_CASE:${format}>)
+	endif()
 endforeach()
