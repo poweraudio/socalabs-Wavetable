@@ -50,9 +50,15 @@ if(APPLE)
 endif()
 
 if (WIN32)
-	set (FORMATS Standalone VST VST3 LV2)
+	set (FORMATS Standalone VST3 LV2)
 else()
-	set (FORMATS Standalone VST VST3 AU LV2)
+	set (FORMATS Standalone VST3 AU LV2)
+endif()
+
+option(WAVETABLE_BUILD_VST "Build Wavetable as a VST 2 plugin (non-free)" OFF)
+
+if(WAVETABLE_BUILD_VST)
+	list(APPEND FORMATS VST)
 endif()
 
 set_property (GLOBAL PROPERTY USE_FOLDERS YES)
@@ -104,7 +110,9 @@ set_target_properties(${PLUGIN_NAME}_Assets PROPERTIES UNITY_BUILD ON UNITY_BUIL
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
-juce_set_vst2_sdk_path (${CMAKE_SOURCE_DIR}/modules/plugin_sdk/vstsdk2.4)
+if(WAVETABLE_BUILD_VST)
+	juce_set_vst2_sdk_path (${CMAKE_SOURCE_DIR}/modules/plugin_sdk/vstsdk2.4)
+endif()
 
 juce_add_plugin (${PLUGIN_NAME}
 				 PRODUCT_NAME ${PLUGIN_NAME}
