@@ -13,7 +13,6 @@ set (PLUGIN_CODE Wave)
 set (CMAKE_POLICY_DEFAULT_CMP0077 NEW)
 set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 set (CMAKE_SUPPRESS_REGENERATION true)
-set (CMAKE_SKIP_INSTALL_RULES YES)
 set (CMAKE_POSITION_INDEPENDENT_CODE ON)
 set_property (GLOBAL PROPERTY DEBUG_CONFIGURATIONS "Debug")
 
@@ -70,7 +69,7 @@ set (JUCE_ENABLE_MODULE_SOURCE_GROUPS ON)
 set (JUCE_BUILD_EXTRAS OFF)
 set (JUCE_BUILD_EXAMPLES OFF)
 
-add_subdirectory (modules/juce)
+add_subdirectory (modules/juce EXCLUDE_FROM_ALL)
 
 set_property (DIRECTORY "${CMAKE_CURRENT_LIST_DIR}/modules/juce" APPEND PROPERTY LABELS JUCE)
 
@@ -242,3 +241,16 @@ else()
 endif()
 
 install (TARGETS ${PLUGIN_NAME} DESTINATION "${dest}")
+
+include(GNUInstallDirs)
+
+if(TARGET ${PROJECT_NAME}_Standalone)
+  install(TARGETS ${PROJECT_NAME}_Standalone DESTINATION ${CMAKE_INSTALL_BINDIR})
+endif()
+
+foreach(format VST VST3 LV2)
+  if(TARGET ${PROJECT_NAME}_${format})
+    get_target_property(output ${PROJECT_NAME}_${format} JUCE_PLUGIN_ARTEFACT_FILE)
+    install(DIRECTORY ${output} DESTINATION ${CMAKE_INSTALL_LIBDIR}/$<LOWER_CASE:${format}>)
+  endif()
+endforeach()
