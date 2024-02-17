@@ -21,6 +21,11 @@ set (CMAKE_CXX_FLAGS_DEVELOPMENT ${CMAKE_CXX_FLAGS_RELEASE})
 
 project (${PLUGIN_NAME} VERSION ${PLUGIN_VERSION} LANGUAGES CXX C HOMEPAGE_URL "https://socalabs.com/")
 
+option (LV2_ONLY "Build plugin only as LV2" OFF)
+if(LV2_ONLY)
+	set (WAVETABLE_JUCE_FORMATS_OVERRIDE LV2 CACHE STRING "JUCE plugin formats")
+endif()
+
 include (CMakeDependentOption)
 
 set_property (DIRECTORY APPEND PROPERTY LABELS ${PLUGIN_NAME})
@@ -59,6 +64,10 @@ option(WAVETABLE_BUILD_VST "Build Wavetable as a VST 2 plugin (non-free)" OFF)
 
 if(WAVETABLE_BUILD_VST)
 	list(APPEND FORMATS VST)
+endif()
+
+if(WAVETABLE_JUCE_FORMATS_OVERRIDE)
+	set (FORMATS ${WAVETABLE_JUCE_FORMATS_OVERRIDE})
 endif()
 
 set_property (GLOBAL PROPERTY USE_FOLDERS YES)
