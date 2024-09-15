@@ -7,9 +7,13 @@ This fork of Wavetable has the following changes:
   `cmake --install` or `make install`.
 * Disabled non-free VST 2 builds by default.
 * Enabled building without the VST 2 SDK.
-* Updated dependency [Gin] to include fixes for Power.
 * In the [`lv2-only`] branch, added CMake option `LV2_ONLY` to build the plugin
-  only as LV2.
+  only as LV2. (Pass `-DLV2_ONLY=ON` to `cmake` after switching to that
+  branch.)
+
+The following changes have since been replicated or superceded upstream:
+
+* Updated dependency [Gin] to include fixes for Power.
 
 [a fork of JUCE]: https://github.com/poweraudio/JUCE
 [Gin]: https://github.com/FigBug/Gin
