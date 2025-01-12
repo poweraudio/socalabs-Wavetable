@@ -10,6 +10,10 @@ WavetableVoice::WavetableVoice (WavetableAudioProcessor& p)
     filter.setNumChannels (2);
 }
 
+WavetableVoice::~WavetableVoice()
+{
+}
+
 void WavetableVoice::noteStarted()
 {
     oscillators[0].setWavetable (&proc.osc1Tables);
@@ -240,6 +244,10 @@ void WavetableVoice::updateParams (int blockSize)
     auto note = getCurrentlyPlayingNote();
     
     proc.modMatrix.setPolyValue (*this, proc.modSrcNote, note.initialNote / 127.0f);
+    
+    double retuneSemitones = 0.0;
+    if (proc.mtsClient)
+        retuneSemitones = MTS_RetuningInSemitones (proc.mtsClient, note.initialNote, -1);
 
     for (int i = 0; i < Cfg::numOSCs; i++)
     {
@@ -247,6 +255,7 @@ void WavetableVoice::updateParams (int blockSize)
         
         currentMidiNotes[i] = noteSmoother.getCurrentValue() * 127.0f;
         if (glideInfo.glissando) currentMidiNotes[i] = (float) juce::roundToInt (currentMidiNotes[i]);
+        currentMidiNotes[i] += float (retuneSemitones);
         currentMidiNotes[i] += float (note.totalPitchbendInSemitones);
         currentMidiNotes[i] += getValue (proc.oscParams[i].tune) + getValue (proc.oscParams[i].finetune) / 100.0f;
 
@@ -264,6 +273,7 @@ void WavetableVoice::updateParams (int blockSize)
     {
         subNote = noteSmoother.getCurrentValue() * 127.0f;
         if (glideInfo.glissando) subNote = (float) juce::roundToInt (subNote);
+        subNote += float (retuneSemitones);
         subNote += float (note.totalPitchbendInSemitones);
         subNote += getValue (proc.subParams.tune);
 
