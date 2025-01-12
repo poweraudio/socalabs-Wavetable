@@ -2,6 +2,7 @@
 
 #include <JuceHeader.h>
 #include "Cfg.h"
+#include "MTS-ESP/Client/libMTSClient.h"
 
 class WavetableAudioProcessor;
 
@@ -11,6 +12,8 @@ class WavetableVoice : public gin::SynthesiserVoice,
 {
 public:
     WavetableVoice (WavetableAudioProcessor& p);
+    
+    ~WavetableVoice() override;
     
     void noteStarted() override;
     void noteRetriggered() override;
@@ -58,5 +61,5 @@ public:
     
     gin::EasedValueSmoother<float> noteSmoother;
     
-    float ampKeyTrack = 1.0f;
+    float ampKeyTrack = 1.0f;    
 };
